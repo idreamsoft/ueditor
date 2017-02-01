@@ -267,12 +267,6 @@
                                 '<nobr>' + editor.getLang("property") + ': <span onclick=$$._onImgEditButtonClick("anchorDialog") class="edui-clickable">' + editor.getLang("modify") + '</span>&nbsp;&nbsp;' +
                                     '<span onclick=$$._onRemoveButtonClick(\'anchor\') class="edui-clickable">' + editor.getLang("delete") + '</span></nobr>');
                         }
-                        if (img.getAttribute("file")) {
-                            dialogName = "attachmentDialog";
-                            html = popup.formatHtml(
-                                '<nobr>' + editor.getLang("property") + ': <span onclick=$$._onImgEditButtonClick("attachmentDialog") class="edui-clickable">' + editor.getLang("modify") + '</span>&nbsp;&nbsp;' +
-                                    '<span onclick=$$._onRemoveButtonClick(\'attachment\') class="edui-clickable">' + editor.getLang("delete") + '</span></nobr>');
-                        }
                         if (img.getAttribute("word_img")) {
                             //todo 放到dialog去做查询
                             editor.word_img = [img.getAttribute("word_img")];
@@ -294,10 +288,17 @@
                         !html && (html = popup.formatHtml(str))
 
                     }
+
                     if (editor.ui._dialogs.linkDialog) {
                         var link = editor.queryCommandValue('link');
                         var url;
-                        if (link && (url = (link.getAttribute('_href') || link.getAttribute('href', 2)))) {
+                        if (link && domUtils.hasClass(link, 'attachment')) {
+                            dialogName = "attachmentDialog";
+                            html = popup.formatHtml(
+                                '<nobr>' + editor.getLang("property") + ': <span onclick=$$._onImgEditButtonClick("attachmentDialog") class="edui-clickable">' + editor.getLang("modify") + '</span>&nbsp;&nbsp;' +
+                                    '<span onclick=$$._onRemoveButtonClick(\'attachment\') class="edui-clickable">' + editor.getLang("delete") + '</span></nobr>');
+
+                        }else if (link && (url = (link.getAttribute('_href') || link.getAttribute('href', 2)))) {
                             var txt = url;
                             if (url.length > 30) {
                                 txt = url.substring(0, 20) + "...";
