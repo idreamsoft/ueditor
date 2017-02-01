@@ -4,11 +4,7 @@
  * Time: 下午16:34
  * 上传图片对话框逻辑代码,包括tab: 远程图片/上传图片/在线图片/搜索图片
  */
-/**
- * 锚点插件，为UEditor提供插入锚点支持
- * @file
- * @since 1.2.6.1
- */
+
 
 (function () {
 
@@ -588,39 +584,39 @@
         /* 初始化容器 */
         initContainer: function () {
             this.container.innerHTML = '';
-            this.list = document.createElement('ul');
-            this.clearFloat = document.createElement('li');
+            // this.list = document.createElement('ul');
+            // this.clearFloat = document.createElement('li');
 
-            domUtils.addClass(this.list, 'list');
-            domUtils.addClass(this.clearFloat, 'clearFloat');
+            // domUtils.addClass(this.list, 'list');
+            // domUtils.addClass(this.clearFloat, 'clearFloat');
 
-            this.list.appendChild(this.clearFloat);
-            this.container.appendChild(this.list);
+            // this.list.appendChild(this.clearFloat);
+            // this.container.appendChild(this.list);
         },
         /* 初始化滚动事件,滚动到地步自动拉取数据 */
         initEvents: function () {
             var _this = this;
 
             /* 滚动拉取图片 */
-            domUtils.on($G('fileList'), 'scroll', function(e){
-                var panel = this;
-                if (panel.scrollHeight - (panel.offsetHeight + panel.scrollTop) < 10) {
-                    _this.getFileData();
-                }
-            });
+            // domUtils.on($G('fileList'), 'scroll', function(e){
+            //     var panel = this;
+            //     if (panel.scrollHeight - (panel.offsetHeight + panel.scrollTop) < 10) {
+            //         _this.getFileData();
+            //     }
+            // });
             /* 选中图片 */
-            domUtils.on(this.list, 'click', function (e) {
-                var target = e.target || e.srcElement,
-                    li = target.parentNode;
+            // domUtils.on(this.list, 'click', function (e) {
+            //     var target = e.target || e.srcElement,
+            //         li = target.parentNode;
 
-                if (li.tagName.toLowerCase() == 'li') {
-                    if (domUtils.hasClass(li, 'selected')) {
-                        domUtils.removeClasses(li, 'selected');
-                    } else {
-                        domUtils.addClass(li, 'selected');
-                    }
-                }
-            });
+            //     if (li.tagName.toLowerCase() == 'li') {
+            //         if (domUtils.hasClass(li, 'selected')) {
+            //             domUtils.removeClasses(li, 'selected');
+            //         } else {
+            //             domUtils.addClass(li, 'selected');
+            //         }
+            //     }
+            // });
         },
         /* 初始化第一次的数据 */
         initData: function () {
@@ -635,45 +631,96 @@
             this.getFileData();
         },
         /* 向后台拉取图片列表数据 */
-        getFileData: function () {
+        getFileData: function (surl) {
             var _this = this;
+            var url   = surl||editor.getActionUrl(editor.getOpt('fileManagerActionName')),
+                isJsonp   = utils.isCrossDomainUrl(url);
+            ajax.request(url, {
+                'timeout': 100000,
+                'dataType': isJsonp ? 'jsonp':'',
+                'method': 'get',
+                'onsuccess': function (r) {
+                    var res = $.parseJSON(r.responseText);
+                    var html = template('explorer', res);
+                    _this.container.innerHTML = html;
+                    $("#refresh",_this.container).on('click',function(event) {
+                        event.preventDefault();
+                        //alert('asd');
+                        _this.reset();
+                    });
+                    $(".getdir",_this.container).on('click',function(event) {
+                        event.preventDefault();
+                        var _url = $(this).attr('href');
+                        _this.getFileData(_url);
+                    });
+                    $(".file",_this.container).on('click',function(event) {
+                        event.preventDefault();
+                        var href = $(this).attr('href'),title = $(this).attr('title');
+                        editor.execCommand('attachment',{
+                            url: href,
+                            title: title,
+                        });
+                    });
 
-            if(!_this.listEnd && !this.isLoadingData) {
-                this.isLoadingData = true;
-                ajax.request(editor.getActionUrl(editor.getOpt('fileManagerActionName')), {
-                    timeout: 100000,
-                    data: utils.extend({
-                            start: this.listIndex,
-                            size: this.listSize
-                        }, editor.queryCommandValue('serverparam')),
-                    method: 'get',
-                    onsuccess: function (r) {
-                        try {
-                            var json = eval('(' + r.responseText + ')');
-                            if (json.state == 'SUCCESS') {
-                                _this.pushData(json.list);
-                                _this.listIndex = parseInt(json.start) + parseInt(json.list.length);
-                                if(_this.listIndex >= json.total) {
-                                    _this.listEnd = true;
-                                }
-                                _this.isLoadingData = false;
-                            }
-                        } catch (e) {
-                            if(r.responseText.indexOf('ue_separate_ue') != -1) {
-                                var list = r.responseText.split(r.responseText);
-                                _this.pushData(list);
-                                _this.listIndex = parseInt(list.length);
-                                _this.listEnd = true;
-                                _this.isLoadingData = false;
-                            }
-                        }
-                    },
-                    onerror: function () {
-                        _this.isLoadingData = false;
-                    }
-                });
-            }
+                    return;
+                },
+                'onerror': function () {
+                    return;
+                }
+            });
         },
+        // getFileData: function () {
+        //     var _this = this;
+        //     if(!_this.listEnd && !this.isLoadingData) {
+        //         this.isLoadingData = true;
+        //         ajax.request(editor.getActionUrl(editor.getOpt('fileManagerActionName')), {
+        //             timeout: 100000,
+        //             data: utils.extend({
+        //                     start: this.listIndex,
+        //                     size: this.listSize
+        //                 }, editor.queryCommandValue('serverparam')),
+        //             method: 'get',
+        //             onsuccess: function (r) {
+        //                 try {
+        //                     var json = eval('(' + r.responseText + ')');
+        //                     if (json.state == 'SUCCESS') {
+        //                         _this.pushData(json.list);
+        //                         _this.listIndex = parseInt(json.start) + parseInt(json.list.length);
+        //                         if(_this.listIndex >= json.total) {
+        //                             _this.listEnd = true;
+        //                         }
+        //                         _this.isLoadingData = false;
+        //                     }
+        //                 } catch (e) {
+        //                     if(r.responseText.indexOf('ue_separate_ue') != -1) {
+        //                         var list = r.responseText.split(r.responseText);
+        //                         _this.pushData(list);
+        //                         _this.listIndex = parseInt(list.length);
+        //                         _this.listEnd = true;
+        //                         _this.isLoadingData = false;
+        //                     }
+        //                 }
+        //             },
+        //             onerror: function () {
+        //                 _this.isLoadingData = false;
+        //             }
+        //         });
+        //     }
+        // },
+        // getInsertList: function () {
+        //     var i, lis = this.list.children, list = [];
+        //     for (i = 0; i < lis.length; i++) {
+        //         if (domUtils.hasClass(lis[i], 'selected')) {
+        //             var url = lis[i].getAttribute('data-url');
+        //             var title = lis[i].getAttribute('data-title') || url.substr(url.lastIndexOf('/') + 1);
+        //             list.push({
+        //                 title: title,
+        //                 url: url
+        //             });
+        //         }
+        //     }
+        //     return list;
+        // }
         /* 添加图片到列表界面上 */
         pushData: function (list) {
             var i, item, img, filetype, preview, icon, _this = this,
@@ -745,17 +792,15 @@
             }
         },
         getInsertList: function () {
-            var i, lis = this.list.children, list = [];
-            for (i = 0; i < lis.length; i++) {
-                if (domUtils.hasClass(lis[i], 'selected')) {
-                    var url = lis[i].getAttribute('data-url');
-                    var title = lis[i].getAttribute('data-title') || url.substr(url.lastIndexOf('/') + 1);
-                    list.push({
+            var list = [];
+            $('input:checkbox:checked',this.container).each(function(){
+               var url   = $(this).val();
+               var title = $(this).attr('title')|| url.substr(url.lastIndexOf('/') + 1);
+                list.push({
+                        url: url,
                         title: title,
-                        url: url
-                    });
-                }
-            }
+                });
+            });
             return list;
         }
     };
