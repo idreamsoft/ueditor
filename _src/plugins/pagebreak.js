@@ -4,8 +4,7 @@
  * @since 1.2.6.1
  */
 UE.plugins['pagebreak'] = function () {
-    var me = this,
-        notBreakTags = ['td'];
+    var me = this,notBreakTags = ['td'];
     me.setOpt('pageBreakTag','_ueditor_page_break_tag_');
 
     function fillNode(node){
@@ -22,16 +21,16 @@ UE.plugins['pagebreak'] = function () {
     }
     //分页符样式添加
 
-    me.ready(function(){
-        utils.cssRule('pagebreak','.pagebreak{display:block;clear:both !important;cursor:default !important;width: 100% !important;margin:0;}',me.document);
-    });
+    // me.ready(function(){
+    //     utils.cssRule('pagebreak','.pagebreak{display:block;clear:both !important;cursor:default !important;width: 100% !important;margin:0;}',me.document);
+    // });
     function isHr(node){
         return node && node.nodeType == 1 && node.tagName == 'HR' && node.className == 'pagebreak';
     }
     me.addInputRule(function(root){
         root.traversal(function(node){
             if(node.type == 'text' && node.data == me.options.pageBreakTag){
-                var hr = UE.uNode.createElement('<hr class="pagebreak" noshade="noshade" size="5" style="-webkit-user-select: none;">');
+                var hr = UE.uNode.createElement('<hr class="pagebreak" style="-webkit-user-select: none;">');
                 node.parentNode.insertBefore(hr,node);
                 node.parentNode.removeChild(node)
             }
@@ -66,9 +65,7 @@ UE.plugins['pagebreak'] = function () {
         execCommand:function () {
             var range = me.selection.getRange(),hr = me.document.createElement('hr');
             domUtils.setAttributes(hr,{
-                'class' : 'pagebreak',
-                noshade:"noshade",
-                size:"5"
+                'class' : 'pagebreak'
             });
             domUtils.unSelectable(hr);
             //table单独处理

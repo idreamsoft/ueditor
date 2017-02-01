@@ -176,7 +176,7 @@
 
     var dialogBtns = {
         noOk:['searchreplace', 'help', 'spechars','preview'],
-        ok:['attachment', 'anchor', 'link', 'insertimage', 'map', 'gmap', 'wordimage',
+        ok:['attachment', 'anchor', 'link', 'insertimage', 'map', 'wordimage',
             'insertvideo', 'edittip', 'edittable', 'edittd', 'scrawl', 'template', 'music']
     };
 

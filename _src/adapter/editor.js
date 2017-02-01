@@ -267,6 +267,12 @@
                                 '<nobr>' + editor.getLang("property") + ': <span onclick=$$._onImgEditButtonClick("anchorDialog") class="edui-clickable">' + editor.getLang("modify") + '</span>&nbsp;&nbsp;' +
                                     '<span onclick=$$._onRemoveButtonClick(\'anchor\') class="edui-clickable">' + editor.getLang("delete") + '</span></nobr>');
                         }
+                        if (img.getAttribute("file")) {
+                            dialogName = "attachmentDialog";
+                            html = popup.formatHtml(
+                                '<nobr>' + editor.getLang("property") + ': <span onclick=$$._onImgEditButtonClick("attachmentDialog") class="edui-clickable">' + editor.getLang("modify") + '</span>&nbsp;&nbsp;' +
+                                    '<span onclick=$$._onRemoveButtonClick(\'attachment\') class="edui-clickable">' + editor.getLang("delete") + '</span></nobr>');
+                        }
                         if (img.getAttribute("word_img")) {
                             //todo 放到dialog去做查询
                             editor.word_img = [img.getAttribute("word_img")];

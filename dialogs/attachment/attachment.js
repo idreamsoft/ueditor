@@ -4,6 +4,11 @@
  * Time: 下午16:34
  * 上传图片对话框逻辑代码,包括tab: 远程图片/上传图片/在线图片/搜索图片
  */
+/**
+ * 锚点插件，为UEditor提供插入锚点支持
+ * @file
+ * @since 1.2.6.1
+ */
 
 (function () {
 
@@ -77,8 +82,7 @@
                     list = onlineFile.getInsertList();
                     break;
             }
-
-            editor.execCommand('insertfile', list);
+            editor.execCommand('attachment', list);
         };
     }
 
