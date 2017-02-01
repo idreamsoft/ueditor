@@ -555,15 +555,25 @@
             return readyFile;
         },
         getInsertList: function () {
-            var i, link, data, list = [],
+            var i, data, list = [],
                 prefix = editor.getOpt('fileUrlPrefix');
             for (i = 0; i < this.fileList.length; i++) {
                 data = this.fileList[i];
-                link = data.url;
-                list.push({
-                    title: data.original || link.substr(link.lastIndexOf('/') + 1),
-                    url: prefix + link
-                });
+                var link = data.url;
+                data.title = data.original;
+                if(!data.title){
+                    data.title = link.substr(link.lastIndexOf('/') + 1);
+                }
+                list.push(data);
+
+                // var link = data.url,
+                // path = data.path||'',
+                // fid = data.fid||0,
+                // ext = data.fileType||'';
+                // list.push({
+                //     title: data.original || link.substr(link.lastIndexOf('/') + 1),
+                //     url: prefix + link,
+                // });
             }
             return list;
         }
@@ -655,7 +665,8 @@
                     });
                     $(".file",_this.container).on('click',function(event) {
                         event.preventDefault();
-                        var href = $(this).attr('href'),title = $(this).attr('title');
+                        var href = $(this).attr('href'),
+                        title = $(this).attr('title');
                         editor.execCommand('attachment',{
                             url: href,
                             title: title,

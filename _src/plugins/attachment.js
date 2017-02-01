@@ -24,7 +24,14 @@ UE.plugin.register('attachment', function (){
                           item = filelist[i];
                           title = item.title || item.url.substr(item.url.lastIndexOf('/') + 1);
                           // html +='<p><input type="text" class="attachment" file="'+item.url+'" value="'+item.title+'" disabled="true" readonly="true"/></p>'
-                          html +='<p><a class="attachment" ext="'+item.fileType+'" fid="'+item.fid+'" path="'+item.path+'" href="'+item.url+'" title="'+item.title+'"/>'+item.original+'</a></p>'
+                          html +='<p><a class="attachment" '+
+                                  'ext="'+item.ext+'"'+
+                                  'fid="'+item.fid+'" '+
+                                  'path="'+item.path+'" '+
+                                  'href="'+item.url+'" '+
+                                  'title="'+item.title+'"/>'+
+                                  item.original+
+                                  '</a></p>'
                           // html += '<p><img file="'+item.url+'" class="attachment" /><a href="'+item.url+'">'+item.title+'</a></p>';
                       }
                       me.execCommand('insertHtml', html);
