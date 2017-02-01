@@ -1522,7 +1522,7 @@
             }
 
             if(serverUrl) {
-                serverUrl = serverUrl + (serverUrl.indexOf('?') == -1 ? '?':'&') + 'action=' + (actionName || '');
+                serverUrl = serverUrl + (serverUrl.indexOf('?') == -1 ? '?':'&') + 'do=' + (actionName || '');
                 return utils.formatUrl(serverUrl);
             } else {
                 return '';
