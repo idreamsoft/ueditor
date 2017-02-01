@@ -1386,7 +1386,8 @@
          * ```
          */
         getLang: function (path) {
-            var lang = UE.I18N[this.options.lang];
+            var L = this.getOpt('lang');
+            var lang = UE.I18N[L];
             if (!lang) {
                 throw Error("not import language file");
             }
