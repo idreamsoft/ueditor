@@ -38,24 +38,18 @@
         'spechars':'~/dialogs/spechars/spechars.html',
         'searchreplace':'~/dialogs/searchreplace/searchreplace.html',
         'map':'~/dialogs/map/map.html',
-        'gmap':'~/dialogs/gmap/gmap.html',
         'insertvideo':'~/dialogs/video/video.html',
         'help':'~/dialogs/help/help.html',
         'preview':'~/dialogs/preview/preview.html',
-        'emotion':'~/dialogs/emotion/emotion.html',
         'wordimage':'~/dialogs/wordimage/wordimage.html',
         'attachment':'~/dialogs/attachment/attachment.html',
-        'insertframe':'~/dialogs/insertframe/insertframe.html',
         'edittip':'~/dialogs/table/edittip.html',
         'edittable':'~/dialogs/table/edittable.html',
         'edittd':'~/dialogs/table/edittd.html',
-        'webapp':'~/dialogs/webapp/webapp.html',
         'snapscreen':'~/dialogs/snapscreen/snapscreen.html',
         'scrawl':'~/dialogs/scrawl/scrawl.html',
         'music':'~/dialogs/music/music.html',
-        'template':'~/dialogs/template/template.html',
-        'background':'~/dialogs/background/background.html',
-        'charts': '~/dialogs/charts/charts.html'
+        'template':'~/dialogs/template/template.html'
     };
     //为工具栏添加按钮，以下都是统一的按钮触发命令，所以写在一起
     var btnCmds = ['undo', 'redo', 'formatmatch',
@@ -181,9 +175,9 @@
 
 
     var dialogBtns = {
-        noOk:['searchreplace', 'help', 'spechars', 'webapp','preview'],
-        ok:['attachment', 'anchor', 'link', 'insertimage', 'map', 'gmap', 'insertframe', 'wordimage',
-            'insertvideo', 'insertframe', 'edittip', 'edittable', 'edittd', 'scrawl', 'template', 'music', 'background', 'charts']
+        noOk:['searchreplace', 'help', 'spechars','preview'],
+        ok:['attachment', 'anchor', 'link', 'insertimage', 'map', 'gmap', 'wordimage',
+            'insertvideo', 'edittip', 'edittable', 'edittd', 'scrawl', 'template', 'music']
     };
 
     for (var p in dialogBtns) {
@@ -207,7 +201,7 @@
                                 className:'edui-for-' + cmd,
                                 title:title,
                                 holdScroll: cmd === 'insertimage',
-                                fullscreen: /charts|preview/.test(cmd),
+                                fullscreen: /preview/.test(cmd),
                                 closeDialog:editor.getLang("closeDialog")
                             }, type == 'ok' ? {
                                 buttons:[
@@ -260,7 +254,7 @@
                                 }
                             },
                             theme:editor.options.theme,
-                            disabled:(cmd == 'scrawl' && editor.queryCommandState("scrawl") == -1) || ( cmd == 'charts' )
+                            disabled:(cmd == 'scrawl' && editor.queryCommandState("scrawl") == -1)
                         });
                         editorui.buttons[cmd] = ui;
                         editor.addListener('selectionchange', function () {
@@ -783,23 +777,6 @@
             var state = editor.queryCommandState('fullscreen');
             ui.setDisabled(state == -1);
             ui.setChecked(editor.ui.isFullScreen());
-        });
-        return ui;
-    };
-
-    // 表情
-    editorui["emotion"] = function (editor, iframeUrl) {
-        var cmd = "emotion";
-        var ui = new editorui.MultiMenuPop({
-            title:editor.options.labelMap[cmd] || editor.getLang("labelMap." + cmd + "") || '',
-            editor:editor,
-            className:'edui-for-' + cmd,
-            iframeUrl:editor.ui.mapUrl(iframeUrl || (editor.options.iframeUrlMap || {})[cmd] || iframeUrlMap[cmd])
-        });
-        editorui.buttons[cmd] = ui;
-
-        editor.addListener('selectionchange', function () {
-            ui.setDisabled(editor.queryCommandState(cmd) == -1)
         });
         return ui;
     };
