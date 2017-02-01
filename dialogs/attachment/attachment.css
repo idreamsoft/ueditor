@@ -103,3 +103,27 @@ i.file-preview.file-type-ipa { background-position: -910px center; }
 i.file-preview.file-type-mp4, i.file-preview.file-type-swf, i.file-preview.file-type-mkv, i.file-preview.file-type-avi, i.file-preview.file-type-flv, i.file-preview.file-type-mov, i.file-preview.file-type-mpg, i.file-preview.file-type-mpeg, i.file-preview.file-type-ogv, i.file-preview.file-type-webm, i.file-preview.file-type-rm, i.file-preview.file-type-rmvb { background-position: -980px center; }
 i.file-preview.file-type-ogg, i.file-preview.file-type-wav, i.file-preview.file-type-wmv, i.file-preview.file-type-mid, i.file-preview.file-type-mp3 { background-position: -1050px center; }
 i.file-preview.file-type-jpg, i.file-preview.file-type-jpeg, i.file-preview.file-type-gif, i.file-preview.file-type-bmp, i.file-preview.file-type-png, i.file-preview.file-type-psd { background-position: -140px center; }
+/* Widgets */
+.widget-box { background: none repeat scroll 0 0 #F9F9F9; border-top: 1px solid #CDCDCD; border-left: 1px solid #CDCDCD; border-right: 1px solid #CDCDCD; clear: both; margin-top: 16px; /* margin-bottom: 16px;  */ position: relative; }
+.widget-box.widget-plain { background: transparent; border: none; margin-top: 0; margin-bottom: 0; }
+.widget-title, .table th { background-color: #efefef; background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea)); background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%); background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%); background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%); background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%); background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfdfd', endColorstr='#eaeaea', GradientType=0 ); /* IE6-9 */
+border-bottom: 1px solid #CDCDCD; height: 36px; }
+.widget-title span.icon { border-right: 1px solid #cdcdcd; padding: 8px 10px 5px 11px; float: left; opacity: .7; }
+.widget-title span.icon i { font-size: 16px; }
+.widget-title h5 { color: #666666; text-shadow: 0 1px 0 #ffffff; float: left; font-size: 14px; font-weight: bold; padding: 12px; line-height: 14px; margin: 0; }
+.widget-title .brs { border-right: 1px solid #DDDDDD; }
+.widget-title .buttons { float: right; margin: 8px 10px 0 0; }
+.widget-title .label { padding: 3px 5px 2px; float: right; margin: 9px 15px 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0 1px 0 #ffffff; }
+.widget-content { padding: 12px 15px; border-bottom: 1px solid #cdcdcd; }
+.widget-box.widget-plain .widget-content { padding: 12px 0 0; }
+.nopadding { padding: 0 !important; }
+.nopadding .table { margin-bottom: 0; }
+.nopadding .table-bordered { border: 0; }
+.nopadding .table-bordered tr > td:first-child { border-left: 0; }
+.nopadding .table-bordered thead:first-child tr:first-child>th:first-child { -webkit-border-top-left-radius: 0px; border-top-left-radius: 0px; -moz-border-radius-topleft: 0px; border-left: none; width: 20px; }
+.table th { background: #fafafa url("../../../img/table_head.gif") repeat-x 0 100%;height: 24px; }
+.table td { background-color: #fff; }
+.table td input{ margin: 4px 0px 2px 3px !important; }
+#files-explorer .pwd { float:left; padding: 5px;margin: 6px 15px 0 10px; }
+#files-explorer .pwd a{color: #fff;font-family: "微软雅黑";}
+#refresh i{margin-top: 1px;}

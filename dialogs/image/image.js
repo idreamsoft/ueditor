@@ -20,6 +20,9 @@
 
     /* 初始化tab标签 */
     function initTabs() {
+    	if(!editor.getOpt('imageManagerEnable')){
+    		 $("#imageManager").remove();
+    	}
         var tabs = $G('tabhead').children;
         for (var i = 0; i < tabs.length; i++) {
             domUtils.on(tabs[i], "click", function (e) {
@@ -59,6 +62,9 @@
                 uploadImage = uploadImage || new UploadImage('queueList');
                 break;
             case 'online':
+		    	if(!editor.getOpt('imageManagerEnable')){
+		    		 return;
+		    	}
                 setAlign(editor.getOpt('imageManagerInsertAlign'));
                 onlineImage = onlineImage || new OnlineImage('imageList');
                 onlineImage.reset();
@@ -274,6 +280,7 @@
                     border: data['border'] || '',
                     floatStyle: data['align'] || '',
                     vspace: data['vhSpace'] || '',
+                    title: data['title'] || '',
                     alt: data['title'] || '',
                     style: "width:" + data['width'] + "px;height:" + data['height'] + "px;"
                 }];
@@ -778,6 +785,7 @@
                 list.push({
                     src: prefix + data.url,
                     _src: prefix + data.url,
+                    title: data.title,
                     alt: data.original,
                     floatStyle: align
                 });
@@ -814,12 +822,12 @@
             var _this = this;
 
             /* 滚动拉取图片 */
-            domUtils.on($G('imageList'), 'scroll', function(e){
-                var panel = this;
-                if (panel.scrollHeight - (panel.offsetHeight + panel.scrollTop) < 10) {
-                    _this.getImageData();
-                }
-            });
+            // domUtils.on($G('imageList'), 'scroll', function(e){
+            //     var panel = this;
+            //     if (panel.scrollHeight - (panel.offsetHeight + panel.scrollTop) < 10) {
+            //         _this.getImageData();
+            //     }
+            // });
             /* 选中图片 */
             domUtils.on(this.container, 'click', function (e) {
                 var target = e.target || e.srcElement,
@@ -852,48 +860,89 @@
             this.initData();
         },
         /* 向后台拉取图片列表数据 */
-        getImageData: function () {
+        getImageData: function (surl) {
             var _this = this;
+            var url   = surl||editor.getActionUrl(editor.getOpt('imageManagerActionName')),
+                isJsonp   = utils.isCrossDomainUrl(url);
+            ajax.request(url, {
+                'timeout': 100000,
+                'dataType': isJsonp ? 'jsonp':'',
+                'method': 'get',
+                'onsuccess': function (r) {
+                    var res = $.parseJSON(r.responseText);
+                    var html = template('explorer', res);
+                    _this.container.innerHTML = html;
+                    $("#refresh",_this.container).on('click',function(event) {
+                        event.preventDefault();
+                        //alert('asd');
+                        _this.reset();
+                    });
+                    $(".getdir",_this.container).on('click',function(event) {
+                        event.preventDefault();
+                        var _url = $(this).attr('href');
+                        _this.getImageData(_url);
+                    });
+                    $(".file",_this.container).on('click',function(event) {
+                        event.preventDefault();
+                        var src = $(this).attr('href');
+                        editor.execCommand('insertimage',{
+                            src: src,
+                            _src: src,
+                            alt: src.substr(src.lastIndexOf('/') + 1),
+                            floatStyle: getAlign()
+                        });
+                    });
 
-            if(!_this.listEnd && !this.isLoadingData) {
-                this.isLoadingData = true;
-                var url = editor.getActionUrl(editor.getOpt('imageManagerActionName')),
-                    isJsonp = utils.isCrossDomainUrl(url);
-                ajax.request(url, {
-                    'timeout': 100000,
-                    'dataType': isJsonp ? 'jsonp':'',
-                    'data': utils.extend({
-                        start: this.listIndex,
-                        size: this.listSize
-                    }, editor.queryCommandValue('serverparam')),
-                    'method': 'get',
-                    'onsuccess': function (r) {
-                        try {
-                            var json = isJsonp ? r:eval('(' + r.responseText + ')');
-                            if (json.state == 'SUCCESS') {
-                                _this.pushData(json.list);
-                                _this.listIndex = parseInt(json.start) + parseInt(json.list.length);
-                                if(_this.listIndex >= json.total) {
-                                    _this.listEnd = true;
-                                }
-                                _this.isLoadingData = false;
-                            }
-                        } catch (e) {
-                            if(r.responseText.indexOf('ue_separate_ue') != -1) {
-                                var list = r.responseText.split(r.responseText);
-                                _this.pushData(list);
-                                _this.listIndex = parseInt(list.length);
-                                _this.listEnd = true;
-                                _this.isLoadingData = false;
-                            }
-                        }
-                    },
-                    'onerror': function () {
-                        _this.isLoadingData = false;
-                    }
-                });
-            }
+                    return;
+                },
+                'onerror': function () {
+                    return;
+                }
+            });
         },
+        /* 向后台拉取图片列表数据 */
+        // getImageData: function () {
+        //     var _this = this;
+
+        //     if(!_this.listEnd && !this.isLoadingData) {
+        //         this.isLoadingData = true;
+        //         var url = editor.getActionUrl(editor.getOpt('imageManagerActionName')),
+        //             isJsonp = utils.isCrossDomainUrl(url);
+        //         ajax.request(url, {
+        //             'timeout': 100000,
+        //             'dataType': isJsonp ? 'jsonp':'',
+        //             'data': utils.extend({
+        //                 start: this.listIndex,
+        //                 size: this.listSize
+        //             }, editor.queryCommandValue('serverparam')),
+        //             'method': 'get',
+        //             'onsuccess': function (r) {
+        //                 try {
+        //                     var json = isJsonp ? r:eval('(' + r.responseText + ')');
+        //                     if (json.state == 'SUCCESS') {
+        //                         _this.pushData(json.list);
+        //                         _this.listIndex = parseInt(json.start) + parseInt(json.list.length);
+        //                         if(_this.listIndex >= json.total) {
+        //                             _this.listEnd = true;
+        //                         }
+        //                         _this.isLoadingData = false;
+        //                     }
+        //                 } catch (e) {
+        //                     if(r.responseText.indexOf('ue_separate_ue') != -1) {
+        //                         var list = r.responseText.split(r.responseText);
+        //                         _this.pushData(list);
+        //                         _this.listIndex = parseInt(list.length);
+        //                         _this.listEnd = true;
+        //                         _this.isLoadingData = false;
+        //                     }
+        //                 }
+        //             },
+        //             'onerror': function () {
+        //                 _this.isLoadingData = false;
+        //             }
+        //         });
+        //     }
+        // },
         /* 添加图片到列表界面上 */
         pushData: function (list) {
             var i, item, img, icon, _this = this,
@@ -948,22 +997,35 @@
             }
         },
         getInsertList: function () {
-            var i, lis = this.list.children, list = [], align = getAlign();
-            for (i = 0; i < lis.length; i++) {
-                if (domUtils.hasClass(lis[i], 'selected')) {
-                    var img = lis[i].firstChild,
-                        src = img.getAttribute('_src');
-                    list.push({
+            var list = [], align = getAlign();
+            $('input:checkbox:checked',this.container).each(function(){
+               var src = $(this).val();
+                list.push({
                         src: src,
                         _src: src,
                         alt: src.substr(src.lastIndexOf('/') + 1),
                         floatStyle: align
-                    });
-                }
-
-            }
+                });
+            });
             return list;
         }
+        // getInsertList: function () {
+        //     var i, lis = this.list.children, list = [], align = getAlign();
+        //     for (i = 0; i < lis.length; i++) {
+        //         if (domUtils.hasClass(lis[i], 'selected')) {
+        //             var img = lis[i].firstChild,
+        //                 src = img.getAttribute('_src');
+        //             list.push({
+        //                 src: src,
+        //                 _src: src,
+        //                 alt: src.substr(src.lastIndexOf('/') + 1),
+        //                 floatStyle: align
+        //             });
+        //         }
+
+        //     }
+        //     return list;
+        // }
     };
 
     /*搜索图片 */
